@@ -1,2 +1,2 @@
 # net_tools
-Ipsum Lorem
+Lorem Ipsum

@@ -2,8 +2,8 @@ import sys
 import getopt
 
 # package imports
-import utils as ut
 import net_tool
+import event_loop
 
 
 class Usage(Exception):
@@ -60,18 +60,17 @@ def main(argv=None):
                 print spacing.format('Log File:'), 'None'
             print ''
 
-        # default execution on startup
-        custom_behavior()
-
         # initial gui main page
-        if gui:
+        if not gui:
             try:
-                # import moved to this from top of script to add portability, in case of incorrect Environment
-                # import _gui.handle_gui as gu
-                # gu.startup_gui()
-                print "No GUI module configured"
+                event_loop.EventLoop()
+
             except Usage, err:
                 print >> sys.stderr, err.msg
+
+        else:
+            # startup up GUI
+            pass
 
     except Usage, err:
         print >> sys.stderr, err.msg
@@ -79,12 +78,15 @@ def main(argv=None):
         return 2
 
 
-def custom_behavior():
-        print "This is where we begin custom start up behavior:\n"
+# def create_mem():
+#     mem_struct = mem.MemDict()
+#     actions = mem_struct.new()
+#     mem_struct.set('actions', 0, 'quit')
+#     mem_struct.set('actions', 1, 'menu')
+#     return mem
 
 
-def print_menu():
-    print "\nHELP:\n"
+
 
 
 if __name__ == "__main__":

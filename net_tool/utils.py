@@ -1,32 +1,48 @@
 import subprocess
 import os
 import sys
-import signal
+import re
 
 
 ##############################
 # User input handlers
 ##############################
 def tab_to_spaces(text):
-    pass
+    new_text = re.sub(r"\t+", " ", text)
+    if new_text:
+        return new_text
+    else:
+        return None
 
 
-def spaces_to_tab(text):
-    pass
+def spaces_to_columns(text):
+    new_line = re.sub(r"\t+", " ", text)
+    new_text = new_line.split("\n")
+    for line in new_text:
+        print re.sub(r"\s+", "", "{0:>20}".format(line))
+    #     new_line = re.sub(r"\t+", " ", line)
+    #     newer_line = new_line.split("\s")
+    #     # for col in newer_line:
+    #     print "{0:20} :)".format(newer_line)
 
+
+def format_line(one_line):
+    return one_line
 
 def get_raw_input():
     string_var = raw_input("Input Text:\n")
-    return string_var
+    if string_var:
+        return string_var
+    else:
+        return get_raw_input()
 
 
 def get_integer():
-    # TODO: returns None incorrectly
     int_var = raw_input("Input Number:\n")
     if int_var.isdigit():
         return int(int_var)
     else:
-        get_integer()
+        return get_integer()
 
 
 def print_matrix(x=16, y=16):
@@ -43,15 +59,12 @@ def print_matrix(x=16, y=16):
 ##############################
 # Utilities based around actual files
 ##############################
-def read_file(which_file):
+def read_file_to_list(which_file):
     try:
-        text = ""
         with open(which_file, 'r') as f:
-            for line in f:
-                text += line
-            f.close()
-        return text
-
+            my_file = [words for words in f]
+        f.close()
+        return my_file
     except:
         return None
 
@@ -61,27 +74,19 @@ def write_file(which_file, text):
         with open(which_file, 'w') as f:
             for line in text:
                 f.write(line)
-            f.write('\n')
             f.close()
-
-        return
-
     except:
-        return
+        print "unable to write file"
 
 
-# TODO: Append currently will only replace text, need to move to end of file and add new content
-def append_file(which_file):
+def append_file(which_file, text):
     try:
-        with open(which_file, 'w') as f:
-            f.seek(-1)
-            f.write('text added by append_file function')
+        with open(which_file, 'a') as f:
+            for line in text:
+                f.write(line)
             f.close()
-
-        return
-
     except:
-        return
+        print "unable to append file"
 
 
 ##############################
@@ -91,16 +96,15 @@ def check_py_environ():
     """
     Method to print Python Interpreter values
     """
-    for param in os.environ.keys():
-        print param, os.environ[param]
+    print "\n" + "#" * 10 + " Python Environment " + "#" * 10 + "\n"
+    print "\n".join([param + ":\n\t" + os.environ[param] + "\n" for param in os.environ])
 
 
 def check_path():
     """
     Method to print paths included in PYTHONPATH
     """
-    for a_path in sys.path:
-        print a_path
+    print "'\n".join([a_path for a_path in sys.path])
 
 
 def check_version():
@@ -145,3 +149,21 @@ def interact_with_shell(case):
     :return: None
     """
     print handle_shell_output(py_to_shell(case))
+
+
+if __name__ == "__main__":
+    # write_file('test', ['this\nis some\ntext\n\nyep'])
+    # append_file('test', ['here\nare my\nbig words'])
+    # print "".join(read_file_to_list('test'))
+
+    # check_py_environ()
+    # check_version()
+
+    # print tab_to_spaces("\n\t\t\t\t\twords\tare\n\tmy\t\t\tfavorite\n")
+    spaces_to_columns(("words\tare\nmy\t\t\tfavorite\n"))
+
+    # print get_raw_input()
+
+    # print get_integer()
+
+    # print print_matrix(5, 4)

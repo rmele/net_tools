@@ -16,10 +16,15 @@ def tab_to_spaces(text):
 
 
 def spaces_to_columns(text):
-    new_line = re.sub(r"\t+", " ", text)
-    new_text = new_line.split("\n")
-    for line in new_text:
-        print re.sub(r"\s+", "", "{0:>20}".format(line))
+    new_line = re.sub(r"\t+", "\s", text)
+    new_word = new_line.split("\s")
+    for word in new_word:
+        print " ".join(['%-2s ' *len(word)])
+
+    # for line in new_word:
+    #     # print line
+    #     new_text = line.split("\n")
+    #     print "{0:>20}".format(line)
     #     new_line = re.sub(r"\t+", " ", line)
     #     newer_line = new_line.split("\s")
     #     # for col in newer_line:
@@ -28,6 +33,7 @@ def spaces_to_columns(text):
 
 def format_line(one_line):
     return one_line
+
 
 def get_raw_input():
     string_var = raw_input("Input Text:\n")

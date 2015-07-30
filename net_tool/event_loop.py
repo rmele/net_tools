@@ -1,10 +1,15 @@
-import Queue
+from Queue import Queue
 import constants
 import mem_dict as mem
-import utils as ut
+# import utils as ut
+import thread_cli
+import thread_gui
+from threading import Event
+
+import time
 
 
-class EventLoop:
+class ClientEventLoop:
     def __init__(self):
         self.event_loop()
         self.hashmap = None
@@ -18,30 +23,52 @@ class EventLoop:
         self.fill_mem_dict()
 
     def event_loop(self):
-        print "Starting Event Loop:\n"
         self.create_mem()
+        g = Queue()
+        k = Queue()
 
+        stop_cli = Event()
+        th_cli = thread_cli.CliThread(stop_cli, k)
+        th_cli.start()
+
+        stop_gui = Event()
+        th_gui = thread_gui.MyThread(stop_gui, g)
+        th_gui.start()
+
+        for i in range(5):
+            g.put(i)
+
+        time.sleep(5)
+        print "Starting Event Loop:\n"
         while True:
-            handled = self.handle_keyboard_input()
-            if not handled:
-                break
+            if not k.empty():
+                print k.get()
+
+            if not g.empty():
+                print g.get()
+
             else:
-                pass
+                stop_gui.set()
 
-    def handle_keyboard_input(self):
-        status = True
-        action = ut.get_raw_input()
-        # TODO: replace control c with action break character
-        if action == "quit" or action == "control c":
-            print "exiting!"
-            status = False
-        elif action in constants.ACTION_LIST:
-            print "Action is in ACTION_LIST\n"
-        else:
-            print "Unknown action [{0}]\n".format(action)
-            self.print_actions()
+        # this will stop the timer
+        stop_cli.set()
 
-        return status
+
+
+    # def handle_keyboard_input(self):
+    #     status = True
+    #     action = ut.get_raw_input()
+    #     # TODO: replace control c with action break character
+    #     if action == "quit" or action == "control c":
+    #         print "exiting!"
+    #         status = False
+    #     elif action in constants.ACTION_LIST:
+    #         print "Action is in ACTION_LIST\n"
+    #     else:
+    #         print "Unknown action [{0}]\n".format(action)
+    #         self.print_actions()
+    #
+    #     return status
 
         # try:
         #     if action.isdigit():
@@ -71,5 +98,5 @@ class EventLoop:
         print "\n"
 
 if __name__ == "__main__":
-    EventLoop()
+    ClientEventLoop()
 

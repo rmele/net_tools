@@ -2,7 +2,7 @@ import sys
 import getopt
 
 # package imports
-import net_tool
+# import net_tool
 import event_loop
 
 
@@ -63,7 +63,7 @@ def main(argv=None):
         # initial gui main page
         if not gui:
             try:
-                event_loop.EventLoop()
+                event_loop.ClientEventLoop()
 
             except Usage, err:
                 print >> sys.stderr, err.msg
